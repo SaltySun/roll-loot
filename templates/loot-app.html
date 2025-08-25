@@ -1,0 +1,19 @@
+<div class="roll-loot-wrap">
+  <div style="display:flex; gap:8px; align-items:center;">
+    <label>分类：</label>
+    <select id="roll-loot-category" style="flex:1;">
+      {{#each categories}}
+        <option value="{{@index}}">{{this.name}}</option>
+      {{/each}}
+    </select>
+    <button type="button" id="roll-loot-btn-roll" class="button">抽奖</button>
+  </div>
+  <div style="margin-top:8px;">
+    <button type="button" id="roll-loot-btn-import" class="button">导入JSON (GM)</button>
+    <button type="button" id="roll-loot-btn-download" class="button">导出JSON</button>
+  </div>
+  <div class="roll-loot-result-area" style="margin-top:12px;"></div>
+  <div style="margin-top:10px; font-size:0.9em; color:#ccc;">
+
+  </div>
+</div>

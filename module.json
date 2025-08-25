@@ -1,0 +1,25 @@
+{
+  "id": "roll-loot",
+  "title": "Roll Loot - 全局抽奖模块",
+  "description": "在侧边栏添加抽奖按钮，支持导入 JSON 分类并全局展示抽奖页面，结果输出到聊天框。",
+  "version": "0.2.0",
+  "authors": [
+    { "name": "your-name" }
+  ],
+  "minimumCoreVersion": "12",
+  "compatibleCoreVersion": "12",
+  "scripts": [
+    "roll-loot.js",
+    "json_item_extractor.js"
+  ],
+  "esmodules": [],
+  "styles": [
+    "styles/loot-app.css"
+  ],
+  "packs": [],
+  "system": [],
+  "dependencies": [],
+  "manifest": "modules/roll-loot/module.json",
+  "download": "",
+  "url": ""
+}
