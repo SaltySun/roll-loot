@@ -4,7 +4,7 @@
   "description": "在侧边栏添加抽奖按钮，支持导入 JSON 分类并全局展示抽奖页面，结果输出到聊天框。",
   "version": "0.2.0",
   "authors": [
-    { "name": "your-name" }
+    { "name": "SaltySun" }
   ],
   "minimumCoreVersion": "12",
   "compatibleCoreVersion": "12",
@@ -20,6 +20,6 @@
   "system": [],
   "dependencies": [],
   "manifest": "modules/roll-loot/module.json",
-  "download": "",
-  "url": ""
+  "download": "https://github.com/SaltySun/roll-loot/blob/main/module.json",
+  "url": "https://github.com/SaltySun/roll-loot"
 }

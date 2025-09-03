@@ -3,17 +3,28 @@
     <label>分类：</label>
     <select id="roll-loot-category" style="flex:1;">
       {{#each categories}}
-        <option value="{{@index}}">{{this.name}}</option>
+      <option value="{{@index}}">{{this.name}}</option>
       {{/each}}
     </select>
     <button type="button" id="roll-loot-btn-roll" class="button">抽奖</button>
   </div>
+  {{#if isGM}}
   <div style="margin-top:8px;">
     <button type="button" id="roll-loot-btn-import" class="button">导入JSON (GM)</button>
     <button type="button" id="roll-loot-btn-download" class="button">导出JSON</button>
   </div>
+  {{/if}}
   <div class="roll-loot-result-area" style="margin-top:12px;"></div>
-  <div style="margin-top:10px; font-size:0.9em; color:#ccc;">
 
+  {{#if isGM}}
+  <div style="margin-top:10px; font-size:0.9em; color:#ccc;">
+    <p>导入数据示例（JSON）：</p>
+    <pre style="white-space:pre-wrap;">
+    { "categories": [ { "name": "箱子A", "items": [ { "name": "金币", "weight": 50 }, ... ] } ] }
+    </pre>
+    <pre style="white-space:pre-wrap;">
+      支持从合集包导出 JSON 文件导入，默认根据珍惜度分类。
+    </pre>
   </div>
+  {{/if}}
 </div>

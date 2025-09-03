@@ -70,7 +70,10 @@ class RollLootApp extends Application {
     let parsed = {};
     try { parsed = JSON.parse(raw || "{}") } catch { parsed = { categories: [] } }
     const normalized = normalizeLootData(parsed);
-    return { categories: normalized.categories || [] };
+    return { 
+      categories: normalized.categories || [],
+      isGM: game.user.isGM
+    };
   }
   activateListeners(html) {
     super.activateListeners(html);
