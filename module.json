@@ -19,7 +19,7 @@
   "packs": [],
   "system": [],
   "dependencies": [],
-  "manifest": "modules/roll-loot/module.json",
-  "download": "https://github.com/SaltySun/roll-loot/blob/main/module.json",
+  "manifest": "https://github.com/SaltySun/roll-loot/blob/main/module.json",
+  "download": "https://github.com/SaltySun/roll-loot/releases/download/0.2.0/roll-loot.zip",
   "url": "https://github.com/SaltySun/roll-loot"
 }
