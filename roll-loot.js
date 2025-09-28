@@ -89,29 +89,120 @@ class RollLootApp extends Application {
     // 导入JSON
     html.find("#roll-loot-btn-import").on("click", async ev => {
       if (!game.user.isGM) return ui.notifications.error("只有 GM 可以导入 JSON 数据。");
-      new Dialog({
-        title: "导入抽奖JSON",
-        content: `<div><textarea id="roll-loot-import-text" style="width:100%;height:260px;">${escapeHTML(game.settings.get(MODULE_ID, SETTINGS_KEY) || "")}</textarea></div>`,
-        buttons: {
-          ok: {
-            label: "导入并保存",
-            callback: async htmlDialog => {
-              const txt = htmlDialog.find("#roll-loot-import-text").val();
-              try {
-                const parsed = JSON.parse(txt);
-                const normalized = normalizeLootData(parsed);
-                await game.settings.set(MODULE_ID, SETTINGS_KEY, JSON.stringify(normalized));
-                ui.notifications.info("抽奖数据已保存。");
-                this.render();
-              } catch {
-                ui.notifications.error("JSON 解析失败，请检查格式。");
-              }
+      
+      // 先尝试触发文件选择对话框
+      const fileInput = html.find("#roll-loot-file-import");
+      fileInput.on("change", async function(ev) {
+        const file = ev.target.files[0];
+        if (!file) return;
+        
+        try {
+          const reader = new FileReader();
+          reader.onload = async (e) => {
+            try {
+              const txt = e.target.result;
+              const parsed = JSON.parse(txt);
+              const normalized = normalizeLootData(parsed);
+              await game.settings.set(MODULE_ID, SETTINGS_KEY, JSON.stringify(normalized));
+              ui.notifications.info("抽奖数据已从文件导入。");
+              RollLootApp.getInstance().render();
+              // 清空文件选择，允许重复上传同一个文件
+              ev.target.value = '';
+            } catch (err) {
+              ui.notifications.error("文件解析失败，请检查JSON格式。");
+              console.error("解析JSON文件时出错:", err);
+              // 清空文件选择，允许重试
+              ev.target.value = '';
+              
+              // 如果文件上传失败，提供手动输入选项
+              showManualImportDialog();
             }
+          };
+          reader.onerror = () => {
+            ui.notifications.error("文件读取失败。");
+            // 清空文件选择，允许重试
+            ev.target.value = '';
+            
+            // 如果文件上传失败，提供手动输入选项
+            showManualImportDialog();
+          };
+          reader.readAsText(file);
+        } catch (err) {
+          ui.notifications.error("处理文件时出错。");
+          console.error("文件处理错误:", err);
+          // 清空文件选择，允许重试
+          ev.target.value = '';
+          
+          // 如果文件上传失败，提供手动输入选项
+          showManualImportDialog();
+        }
+      });
+      
+      // 触发文件选择
+      fileInput.click();
+      
+      // 设置一个超时，如果用户取消了文件选择，提供手动输入选项
+      setTimeout(() => {
+        // 检查文件输入是否仍为空
+        if (!fileInput[0].files.length) {
+          // 提供手动输入选项
+          new Dialog({
+            title: "导入抽奖JSON",
+            content: `
+              <div>
+                <p style="margin-bottom: 10px;">选择导入方式：</p>
+                <div style="display: flex; gap: 10px;">
+                  <button type="button" id="roll-loot-retry-file" class="button">重新选择文件</button>
+                  <button type="button" id="roll-loot-use-manual" class="button">手动输入JSON</button>
+                </div>
+              </div>
+            `,
+            buttons: {
+              close: { label: "关闭" }
+            },
+            render: html => {
+              html.find("#roll-loot-retry-file").on("click", () => {
+                // 触发文件选择
+                html.closest(".dialog").remove();
+                fileInput.click();
+              });
+              
+              html.find("#roll-loot-use-manual").on("click", () => {
+                // 显示手动输入对话框
+                html.closest(".dialog").remove();
+                showManualImportDialog();
+              });
+            }
+          }).render(true);
+        }
+      }, 500); // 给用户一些时间来选择文件
+      
+      // 手动输入对话框函数
+      function showManualImportDialog() {
+        new Dialog({
+          title: "手动导入抽奖JSON",
+          content: `<div><textarea id="roll-loot-import-text" style="width:100%;height:260px;">${escapeHTML(game.settings.get(MODULE_ID, SETTINGS_KEY) || "")}</textarea></div>`,
+          buttons: {
+            ok: {
+              label: "导入并保存",
+              callback: async htmlDialog => {
+                const txt = htmlDialog.find("#roll-loot-import-text").val();
+                try {
+                  const parsed = JSON.parse(txt);
+                  const normalized = normalizeLootData(parsed);
+                  await game.settings.set(MODULE_ID, SETTINGS_KEY, JSON.stringify(normalized));
+                  ui.notifications.info("抽奖数据已保存。");
+                  RollLootApp.getInstance().render();
+                } catch {
+                  ui.notifications.error("JSON 解析失败，请检查格式。");
+                }
+              }
+            },
+            cancel: { label: "取消" }
           },
-          cancel: { label: "取消" }
-        },
-        default: "ok"
-      }).render(true);
+          default: "ok"
+        }).render(true);
+      }
     });
     // 导出JSON
     html.find("#roll-loot-btn-download").on("click", ev => {
